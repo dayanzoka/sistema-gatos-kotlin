@@ -53,9 +53,9 @@ fun HomeScreen(navController: NavController) {
 
             HomeFeatureCard(
                 title = "Agendamentos/Histórico",
-                description = "Visualize e agende tratamentos e serviços.",
+                description = "Visualize todos os tratamentos agendados.",
                 icon = Icons.Default.CalendarToday,
-                onClick = { /* Navegar para a lista de tratamentos */ }
+                onClick = { navController.navigate(Screen.ScheduleList.route) }
             )
             Spacer(modifier = Modifier.height(16.dp))
 

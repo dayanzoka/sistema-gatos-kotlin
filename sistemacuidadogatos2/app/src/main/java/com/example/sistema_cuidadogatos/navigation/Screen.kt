@@ -19,7 +19,7 @@ sealed class Screen(val route: String) {
         fun createRoute(gatoId: Long? = 0L) = "cat_form/${gatoId ?: 0L}"
     }
 
-    // Tratamentos
+    // Tratamentos (Específicos de um Gato)
     object TreatmentList : Screen("treatment_list/{gatoId}") {
         fun createRoute(gatoId: Long) = "treatment_list/$gatoId"
     }
@@ -34,6 +34,9 @@ sealed class Screen(val route: String) {
     object HealthRecordForm : Screen("health_record_form/{recordId}/{gatoId}") {
         fun createRoute(recordId: Long? = 0L, gatoId: Long) = "health_record_form/${recordId ?: 0L}/$gatoId"
     }
+
+    // Agendamentos (Geral - Todos os gatos)
+    object ScheduleList : Screen("schedule_list")
 
     // API
     object ApiDemo : Screen("api_demo")

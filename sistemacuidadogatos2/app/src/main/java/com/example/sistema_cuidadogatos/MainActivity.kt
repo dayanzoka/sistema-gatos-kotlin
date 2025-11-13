@@ -15,13 +15,18 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.sistema_cuidadogatos.navigation.Screen
 import com.example.sistema_cuidadogatos.ui.screens.api_demo.ApiDemoScreen
+import com.example.sistema_cuidadogatos.ui.screens.cat.CatDetailScreen
 import com.example.sistema_cuidadogatos.ui.screens.cat.CatFormScreen
 import com.example.sistema_cuidadogatos.ui.screens.cat.CatListScreen
+import com.example.sistema_cuidadogatos.ui.screens.health.HealthHistoryScreen
+import com.example.sistema_cuidadogatos.ui.screens.health.HealthRecordFormScreen
 import com.example.sistema_cuidadogatos.ui.screens.home.HomeScreen
+import com.example.sistema_cuidadogatos.ui.screens.schedule.ScheduleListScreen
+import com.example.sistema_cuidadogatos.ui.screens.treatment.TreatmentFormScreen
+import com.example.sistema_cuidadogatos.ui.screens.treatment.TreatmentListScreen
 import com.example.sistema_cuidadogatos.ui.screens.tutor.TutorFormScreen
 import com.example.sistema_cuidadogatos.ui.screens.tutor.TutorListScreen
 import com.example.sistema_cuidadogatos.ui.theme.CuiGatoTheme
-import androidx.compose.material3.Text
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,23 +80,26 @@ fun CuiGatoAppNavHost() {
             )
         }
 
-        // Rota de Detalhes do Gato (Onde o usuário acessa saúde e tratamentos)
+        // Rota de Detalhes do Gato
         composable(
             route = Screen.CatDetail.route,
             arguments = listOf(navArgument("gatoId") { type = NavType.LongType })
-        ) {
-            // CatDetailScreen(navController = navController, gatoId = it.arguments!!.getLong("gatoId"))
-            Text("Detalhes do Gato ID: ${it.arguments!!.getLong("gatoId")}")
+        ) { backStackEntry ->
+            CatDetailScreen(
+                navController = navController,
+                gatoId = backStackEntry.arguments!!.getLong("gatoId")
+            )
         }
 
-
-        // Rotas de Tratamento
+        // Rotas de Tratamento (Lista Específica de um Gato)
         composable(
             route = Screen.TreatmentList.route,
             arguments = listOf(navArgument("gatoId") { type = NavType.LongType })
-        ) {
-            // TreatmentListScreen(navController = navController, gatoId = it.arguments!!.getLong("gatoId"))
-            Text("Lista de Tratamentos para Gato ID: ${it.arguments!!.getLong("gatoId")}")
+        ) { backStackEntry ->
+            TreatmentListScreen(
+                navController = navController,
+                gatoId = backStackEntry.arguments!!.getLong("gatoId")
+            )
         }
 
         composable(
@@ -100,19 +108,23 @@ fun CuiGatoAppNavHost() {
                 navArgument("treatmentId") { defaultValue = 0L; type = NavType.LongType },
                 navArgument("gatoId") { type = NavType.LongType }
             )
-        ) {
-            // TreatmentFormScreen(navController = navController, treatmentId = it.arguments!!.getLong("treatmentId"), gatoId = it.arguments!!.getLong("gatoId"))
-            Text("Formulário Tratamento Gato ID: ${it.arguments!!.getLong("gatoId")}")
+        ) { backStackEntry ->
+            TreatmentFormScreen(
+                navController = navController,
+                treatmentId = backStackEntry.arguments!!.getLong("treatmentId"),
+                gatoId = backStackEntry.arguments!!.getLong("gatoId")
+            )
         }
-
 
         // Rotas de Saúde
         composable(
             route = Screen.HealthHistory.route,
             arguments = listOf(navArgument("gatoId") { type = NavType.LongType })
-        ) {
-            // HealthHistoryScreen(navController = navController, gatoId = it.arguments!!.getLong("gatoId"))
-            Text("Histórico de Saúde para Gato ID: ${it.arguments!!.getLong("gatoId")}")
+        ) { backStackEntry ->
+            HealthHistoryScreen(
+                navController = navController,
+                gatoId = backStackEntry.arguments!!.getLong("gatoId")
+            )
         }
 
         composable(
@@ -121,9 +133,17 @@ fun CuiGatoAppNavHost() {
                 navArgument("recordId") { defaultValue = 0L; type = NavType.LongType },
                 navArgument("gatoId") { type = NavType.LongType }
             )
-        ) {
-            // HealthRecordFormScreen(navController = navController, recordId = it.arguments!!.getLong("recordId"), gatoId = it.arguments!!.getLong("gatoId"))
-            Text("Formulário Registro Saúde Gato ID: ${it.arguments!!.getLong("gatoId")}")
+        ) { backStackEntry ->
+            HealthRecordFormScreen(
+                navController = navController,
+                recordId = backStackEntry.arguments!!.getLong("recordId"),
+                gatoId = backStackEntry.arguments!!.getLong("gatoId")
+            )
+        }
+
+        // Rota de Lista Geral de Agendamentos
+        composable(Screen.ScheduleList.route) {
+            ScheduleListScreen(navController = navController)
         }
     }
 }
