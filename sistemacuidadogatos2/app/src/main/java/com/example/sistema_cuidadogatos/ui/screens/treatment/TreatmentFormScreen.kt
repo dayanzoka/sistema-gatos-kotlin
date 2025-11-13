@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.database.entities.TratamentoEntity
@@ -33,14 +34,8 @@ fun TreatmentFormScreen(
     var status by remember { mutableStateOf("PENDENTE") }
     var observacoes by remember { mutableStateOf("") }
 
-
-    LaunchedEffect(treatmentId) {
-        if (isEdit) {
-
-        }
-    }
-
     Scaffold(
+        containerColor = Color.Transparent, // ✅ Transparente
         topBar = {
             TopAppBar(
                 title = { Text(if (isEdit) "Editar Tratamento" else "Novo Tratamento") },
@@ -48,7 +43,8 @@ fun TreatmentFormScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent) // ✅ Transparente
             )
         },
         floatingActionButton = {
@@ -56,9 +52,7 @@ fun TreatmentFormScreen(
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val dataLong = try {
                     dateFormat.parse(dataStr)?.time ?: System.currentTimeMillis()
-                } catch (e: Exception) {
-                    System.currentTimeMillis()
-                }
+                } catch (e: Exception) { System.currentTimeMillis() }
 
                 val tratamento = TratamentoEntity(
                     id = treatmentId,
@@ -82,20 +76,23 @@ fun TreatmentFormScreen(
                 .padding(padding)
                 .padding(16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            // Tipos (Simples Dropdown ou RadioButton, aqui simplificado como Texto por enquanto)
-            OutlinedTextField(value = tipo, onValueChange = { tipo = it }, label = { Text("Tipo (ex: VACINA, CONSULTA)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(value = dataStr, onValueChange = { dataStr = it }, label = { Text("Data (dd/MM/yyyy)") }, modifier = Modifier.weight(1f))
-                OutlinedTextField(value = horario, onValueChange = { horario = it }, label = { Text("Horário (HH:mm)") }, modifier = Modifier.weight(1f))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(value = tipo, onValueChange = { tipo = it }, label = { Text("Tipo (ex: VACINA)") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(value = dataStr, onValueChange = { dataStr = it }, label = { Text("Data (dd/MM/yyyy)") }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = horario, onValueChange = { horario = it }, label = { Text("Horário") }, modifier = Modifier.weight(1f))
+                    }
+                    OutlinedTextField(value = status, onValueChange = { status = it }, label = { Text("Status") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = observacoes, onValueChange = { observacoes = it }, label = { Text("Obs") }, modifier = Modifier.fillMaxWidth())
+                }
             }
-
-            OutlinedTextField(value = status, onValueChange = { status = it }, label = { Text("Status (PENDENTE/REALIZADO)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = observacoes, onValueChange = { observacoes = it }, label = { Text("Observações") }, modifier = Modifier.fillMaxWidth(), minLines = 3)
         }
     }
 }

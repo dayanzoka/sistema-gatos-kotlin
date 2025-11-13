@@ -1,17 +1,21 @@
 package com.example.sistema_cuidadogatos.ui.screens.home
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Pets
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.navigation.Screen
@@ -20,21 +24,27 @@ import com.example.sistema_cuidadogatos.navigation.Screen
 @Composable
 fun HomeScreen(navController: NavController) {
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Home - CuiGato") })
-        }
+        containerColor = Color.Transparent,
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Bem-vindo ao Sistema de Cuidados Felinos!", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = "sistema de cuidado \n para gatos ฅ^•ﻌ•^ฅ", // Você pode mudar o texto aqui
+                style = MaterialTheme.typography.titleMedium, // ✅ Mudei para titleMedium (menor)
+                color = MaterialTheme.colorScheme.onSurface, // Garante que fique Marrom
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Cards de Acesso Rápido (Funcionalidades Principais)
+            // Cards de Acesso Rápido
             HomeFeatureCard(
                 title = "Gerenciar Tutores",
                 description = "Cadastro, edição e lista de responsáveis.",
@@ -46,14 +56,14 @@ fun HomeScreen(navController: NavController) {
             HomeFeatureCard(
                 title = "Gerenciar Gatos",
                 description = "Informações, saúde e tratamentos dos seus pets.",
-                icon = Icons.Default.Pets, // Exemplo de ícone, use um emoji ou ícone apropriado.
+                icon = Icons.Default.Pets,
                 onClick = { navController.navigate(Screen.CatList.route) }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             HomeFeatureCard(
                 title = "Agendamentos/Histórico",
-                description = "Visualize todos os tratamentos agendados.",
+                description = "Visualize e agende tratamentos e serviços.",
                 icon = Icons.Default.CalendarToday,
                 onClick = { navController.navigate(Screen.ScheduleList.route) }
             )
@@ -73,14 +83,17 @@ fun HomeScreen(navController: NavController) {
 fun HomeFeatureCard(
     title: String,
     description: String,
-    icon: Any, // Usando Any para aceitar Vector/Image assets (simplificado)
+    icon: Any,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+        )
     ) {
         Row(
             modifier = Modifier
@@ -88,8 +101,7 @@ fun HomeFeatureCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Renderiza o ícone
-            if (icon is androidx.compose.ui.graphics.vector.ImageVector) {
+            if (icon is ImageVector) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,

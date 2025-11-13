@@ -23,7 +23,18 @@ class RegistroSaudeViewModel(
     private val _registroSaudeUiState = MutableStateFlow(RegistroSaudeUiState(isLoading = false))
     val registroSaudeUiState: StateFlow<RegistroSaudeUiState> = _registroSaudeUiState.asStateFlow()
 
-    // O carregamento inicial pode ser feito sob demanda (por gatoId)
+    fun loadAllRegistros() {
+        viewModelScope.launch {
+            _registroSaudeUiState.update { it.copy(isLoading = true) }
+            try {
+                repository.getAllRegistrosSaude().collect { lista ->
+                    _registroSaudeUiState.update { it.copy(registros = lista, isLoading = false) }
+                }
+            } catch (e: Exception) {
+                _registroSaudeUiState.update { it.copy(error = "Erro: ${e.message}", isLoading = false) }
+            }
+        }
+    }
 
     fun loadRegistrosByGato(gatoId: Long) {
         viewModelScope.launch {

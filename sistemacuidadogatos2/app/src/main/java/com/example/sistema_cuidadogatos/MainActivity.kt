@@ -3,11 +3,17 @@ package com.example.sistema_cuidadogatos
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,17 +39,31 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CuiGatoTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    CuiGatoAppNavHost()
+                // Box permite empilhar elementos (Fundo atrás, App na frente)
+                Box(modifier = Modifier.fillMaxSize()) {
+
+                    // 1. A Imagem de Fundo
+                    Image(
+                        painter = painterResource(id = R.drawable.wallpaper_background),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    // 2. O App (NavHost) com fundo transparente
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color.Transparent
+                    ) {
+                        CuiGatoAppNavHost() // <--- O ERRO ESTÁ AQUI SE A FUNÇÃO ABAIXO NÃO EXISTIR
+                    }
                 }
             }
         }
     }
 }
 
+// 👇 AQUI ESTÁ A PARTE QUE PROVAVELMENTE FALTA NO SEU ARQUIVO 👇
 @Composable
 fun CuiGatoAppNavHost() {
     val navController = rememberNavController()
@@ -91,7 +111,7 @@ fun CuiGatoAppNavHost() {
             )
         }
 
-        // Rotas de Tratamento (Lista Específica de um Gato)
+        // Rotas de Tratamento
         composable(
             route = Screen.TreatmentList.route,
             arguments = listOf(navArgument("gatoId") { type = NavType.LongType })

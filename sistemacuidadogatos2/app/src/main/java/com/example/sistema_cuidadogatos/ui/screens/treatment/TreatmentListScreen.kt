@@ -37,6 +37,7 @@ fun TreatmentListScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = { Text("💊 Tratamentos") },
@@ -44,7 +45,8 @@ fun TreatmentListScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         floatingActionButton = {
@@ -83,7 +85,7 @@ fun TreatmentListScreen(
         if (tratamentoToDelete != null) {
             AlertDialog(
                 onDismissRequest = { tratamentoToDelete = null },
-                title = { Text("Excluir Tratamento") },
+                title = { Text("Excluir") },
                 text = { Text("Deseja excluir este agendamento?") },
                 confirmButton = {
                     TextButton(onClick = {
@@ -91,9 +93,7 @@ fun TreatmentListScreen(
                         tratamentoToDelete = null
                     }) { Text("Excluir", color = Color.Red) }
                 },
-                dismissButton = {
-                    TextButton(onClick = { tratamentoToDelete = null }) { Text("Cancelar") }
-                }
+                dismissButton = { TextButton(onClick = { tratamentoToDelete = null }) { Text("Cancelar") } }
             )
         }
     }
@@ -106,12 +106,12 @@ fun TreatmentItem(
     onDelete: () -> Unit
 ) {
     val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
     ) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -120,11 +120,10 @@ fun TreatmentItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(tratamento.tipo, style = MaterialTheme.typography.titleMedium)
                 Text("Data: ${dateFormatter.format(Date(tratamento.dataAgendada))} às ${tratamento.horario}")
-                Text("Status: ${tratamento.status}", style = MaterialTheme.typography.bodySmall,
-                    color = if (tratamento.status == "REALIZADO") Color.Green else Color.Gray)
+                Text("Status: ${tratamento.status}", style = MaterialTheme.typography.bodySmall)
             }
             IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, null, tint = MaterialTheme.colorScheme.primary) }
-            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
+            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.primary) }
         }
     }
 }

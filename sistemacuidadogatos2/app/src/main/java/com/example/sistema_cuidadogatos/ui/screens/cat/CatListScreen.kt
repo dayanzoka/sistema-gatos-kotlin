@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.ui.viewmodel.GatoViewModel
@@ -31,14 +32,21 @@ fun CatListScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("🐾 Lista de Gatos") },
+                title = {
+                    Text(
+                        "⊹ ࣪ ˖ lista de gatos ⊹ ࣪ ˖",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         floatingActionButton = {
@@ -67,12 +75,8 @@ fun CatListScreen(
                 items(uiState.gatos) { gato ->
                     CatListItem(
                         gato = gato,
-                        onViewClick = {
-                            navController.navigate(Screen.CatDetail.createRoute(gato.id))
-                        },
-                        onEditClick = {
-                            navController.navigate(Screen.CatForm.createRoute(gato.id))
-                        },
+                        onViewClick = { navController.navigate(Screen.CatDetail.createRoute(gato.id)) },
+                        onEditClick = { navController.navigate(Screen.CatForm.createRoute(gato.id)) },
                         onDeleteClick = {
                             gatoToDelete = gato
                             showDeleteDialog = true
@@ -82,7 +86,6 @@ fun CatListScreen(
             }
         }
 
-        // Dialog de confirmação de exclusão
         if (showDeleteDialog && gatoToDelete != null) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
@@ -95,14 +98,10 @@ fun CatListScreen(
                             showDeleteDialog = false
                             gatoToDelete = null
                         }
-                    ) {
-                        Text("Excluir", color = MaterialTheme.colorScheme.error)
-                    }
+                    ) { Text("Excluir", color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Cancelar")
-                    }
+                    TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar") }
                 }
             )
         }
@@ -120,7 +119,8 @@ fun CatListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
     ) {
         Row(
             modifier = Modifier
@@ -128,44 +128,15 @@ fun CatListItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Informações do Gato
             Column(modifier = Modifier.weight(1f)) {
                 Text(gato.nome, style = MaterialTheme.typography.titleMedium)
                 Text("Raça: ${gato.raca} | Idade: ${gato.idade} anos", style = MaterialTheme.typography.bodySmall)
                 Text("Peso: ${gato.peso} kg | Cor: ${gato.cor}", style = MaterialTheme.typography.bodySmall)
             }
-
-            // Botões de Ação
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                // Botão Ver Detalhes
-                IconButton(
-                    onClick = onViewClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Icon(Icons.Default.Visibility, contentDescription = "Ver Detalhes")
-                }
-
-                // Botão Editar
-                IconButton(
-                    onClick = onEditClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(Icons.Default.Edit, contentDescription = "Editar Gato")
-                }
-
-                // Botão Excluir
-                IconButton(
-                    onClick = onDeleteClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Icon(Icons.Default.Delete, contentDescription = "Excluir Gato")
-                }
+                IconButton(onClick = onViewClick) { Icon(Icons.Default.Visibility, "Ver", tint = MaterialTheme.colorScheme.primary) }
+                IconButton(onClick = onEditClick) { Icon(Icons.Default.Edit, "Editar", tint = MaterialTheme.colorScheme.primary) }
+                IconButton(onClick = onDeleteClick) { Icon(Icons.Default.Delete, "Excluir", tint = MaterialTheme.colorScheme.primary) }
             }
         }
     }

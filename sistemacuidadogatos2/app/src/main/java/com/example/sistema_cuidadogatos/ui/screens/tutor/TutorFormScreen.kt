@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.database.entities.TutorEntity
@@ -22,19 +23,16 @@ fun TutorFormScreen(
 ) {
     val isEdit = tutorId != 0L
 
-    // Opcional: Carregar dados do tutor se for edição
     LaunchedEffect(tutorId) {
         viewModel.loadTutor(tutorId)
     }
 
     val currentTutor = viewModel.tutorUiState.collectAsState().value.currentTutor
-    // Inicializa os campos com dados existentes ou vazios
     var nome by remember { mutableStateOf(currentTutor?.nome ?: "") }
     var email by remember { mutableStateOf(currentTutor?.email ?: "") }
     var telefone by remember { mutableStateOf(currentTutor?.telefone ?: "") }
     var endereco by remember { mutableStateOf(currentTutor?.endereco ?: "") }
 
-    // Atualiza os campos se o currentTutor mudar (após carregar o tutor para edição)
     LaunchedEffect(currentTutor) {
         currentTutor?.let {
             nome = it.nome
@@ -44,8 +42,8 @@ fun TutorFormScreen(
         }
     }
 
-
     Scaffold(
+        containerColor = Color.Transparent, // ✅ Transparente
         topBar = {
             TopAppBar(
                 title = { Text(if (isEdit) "Editar Tutor" else "Novo Tutor") },
@@ -53,7 +51,8 @@ fun TutorFormScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent) // ✅ Transparente
             )
         },
         floatingActionButton = {
@@ -68,7 +67,6 @@ fun TutorFormScreen(
                             endereco = endereco,
                             dataCadastro = currentTutor?.dataCadastro ?: System.currentTimeMillis()
                         )
-
                         viewModel.saveTutor(tutor)
                         navController.popBackStack()
                     }
@@ -84,13 +82,20 @@ fun TutorFormScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = telefone, onValueChange = { telefone = it }, label = { Text("Telefone") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = endereco, onValueChange = { endereco = it }, label = { Text("Endereço") }, modifier = Modifier.fillMaxWidth())
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(value = telefone, onValueChange = { telefone = it }, label = { Text("Telefone") }, modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(value = endereco, onValueChange = { endereco = it }, label = { Text("Endereço") }, modifier = Modifier.fillMaxWidth())
+                }
+            }
         }
     }
 }

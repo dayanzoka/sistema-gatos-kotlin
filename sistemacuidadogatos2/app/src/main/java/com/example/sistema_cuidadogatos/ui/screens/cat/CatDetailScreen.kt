@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -24,7 +25,6 @@ fun CatDetailScreen(
     gatoId: Long,
     viewModel: GatoViewModel = koinViewModel()
 ) {
-    // Carregar dados do gato
     var gato by remember { mutableStateOf<com.example.sistema_cuidadogatos.database.entities.GatoEntity?>(null) }
 
     LaunchedEffect(gatoId) {
@@ -32,6 +32,7 @@ fun CatDetailScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent, // ✅ Transparente
         topBar = {
             TopAppBar(
                 title = { Text(gato?.nome ?: "Detalhes do Gato") },
@@ -44,7 +45,8 @@ fun CatDetailScreen(
                     IconButton(onClick = { navController.navigate(Screen.CatForm.createRoute(gatoId)) }) {
                         Icon(Icons.Default.Edit, contentDescription = "Editar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent) // ✅ Transparente
             )
         }
     ) { padding ->
@@ -60,10 +62,10 @@ fun CatDetailScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Cartão de Informações Básicas
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Informações", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -76,8 +78,6 @@ fun CatDetailScreen(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                // Botões de Ação para Sub-funcionalidades
                 Text("Ações Rápidas", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(16.dp))
 

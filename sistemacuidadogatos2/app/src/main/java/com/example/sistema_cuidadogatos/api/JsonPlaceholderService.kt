@@ -1,22 +1,25 @@
 package com.example.sistema_cuidadogatos.api
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.*
 
 // Modelo de Dados para POSTS (demonstração)
+@Serializable // ✅ Adicionado: Essencial para o Kotlin Serialization funcionar
 data class PostApiModel(
-    @SerializedName("userId") val userId: Int,
-    @SerializedName("id") val id: Int?,
-    @SerializedName("title") val title: String,
-    @SerializedName("body") val body: String
+    @SerialName("userId") val userId: Int, // ✅ Alterado: @SerializedName (GSON) -> @SerialName (Kotlinx)
+    @SerialName("id") val id: Int?,
+    @SerialName("title") val title: String,
+    @SerialName("body") val body: String
 )
 
 // Modelo de Dados para Usuários (demonstração)
+@Serializable // ✅ Adicionado
 data class UserApiModel(
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName("email") val email: String
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("email") val email: String
 )
 
 interface JsonPlaceholderService {

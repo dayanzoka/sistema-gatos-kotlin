@@ -39,7 +39,8 @@ class CuiGatoRepository(
     suspend fun saveTratamento(tratamento: TratamentoEntity) = tratamentoDao.insert(tratamento)
     suspend fun deleteTratamento(tratamento: TratamentoEntity) = tratamentoDao.delete(tratamento)
 
-    // --- Registros de Saúde (Room) ---
+    fun getAllRegistrosSaude(): Flow<List<RegistroSaudeEntity>> = registroSaudeDao.getAllRegistros()
+
     fun getRegistrosByGato(gatoId: Long): Flow<List<RegistroSaudeEntity>> = registroSaudeDao.getRegistrosByGato(gatoId)
     suspend fun saveRegistroSaude(registro: RegistroSaudeEntity) = registroSaudeDao.insert(registro)
     suspend fun deleteRegistroSaude(registro: RegistroSaudeEntity) = registroSaudeDao.delete(registro)

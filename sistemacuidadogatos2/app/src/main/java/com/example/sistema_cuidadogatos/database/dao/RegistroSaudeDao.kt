@@ -17,4 +17,8 @@ interface RegistroSaudeDao {
 
     @Query("SELECT * FROM registro_saude WHERE gatoId = :gatoId ORDER BY data DESC")
     fun getRegistrosByGato(gatoId: Long): Flow<List<RegistroSaudeEntity>>
+
+    // ✅ ESSA É A FUNÇÃO QUE FALTA:
+    @Query("SELECT * FROM registro_saude ORDER BY data DESC")
+    fun getAllRegistros(): Flow<List<RegistroSaudeEntity>>
 }

@@ -1,56 +1,73 @@
 package com.example.sistema_cuidadogatos.ui.theme
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryDark,
-    secondary = SecondaryDark,
-    tertiary = TertiaryLight,
-    background = BackgroundDark,
-    surface = BackgroundDark,
-    onPrimary = OnPrimaryDark,
-    onSecondary = OnPrimaryDark,
-    onBackground = OnPrimaryDark,
-    onSurface = OnPrimaryDark,
+    primary = BrownLight,        // Ícones principais (Marrom Claro no escuro)
+    onPrimary = BrownCute,       // Texto dentro do botão primary
+    secondary = GreenBabyDark,   // Verde mais escuro
+    onSecondary = BrownCute,
+    tertiary = GreenBaby,
+    background = Color.Transparent, // Transparente para ver o wallpaper
+    surface = GreenBabyDark,     // Cards verdes
+    onSurface = BrownCute,       // Texto Marrom
+    error = ErrorRed,
+    onError = Color.White
 )
 
+// Definição do Esquema Claro (Light Mode - O principal para seu tema fofo)
 private val LightColorScheme = lightColorScheme(
-    primary = PrimaryLight, // Baby Blue
-    secondary = SecondaryLight, // Sky Blue
-    tertiary = TertiaryLight,
-    background = BackgroundLight, // Quase Branco
-    surface = SurfaceLight, // Quase Branco para Cards
-    onPrimary = OnPrimaryLight, // Azul Escuro para Texto
-    onSecondary = OnPrimaryLight,
-    onBackground = OnBackgroundLight,
-    onSurface = OnBackgroundLight,
+    primary = BrownCute,         // Ícones principais (Marrom Escuro)
+    onPrimary = Color.White,     // Texto dentro do botão primary
+    secondary = GreenBaby,       // Verde Bebê
+    onSecondary = BrownCute,
+    tertiary = BrownLight,
+    background = Color.Transparent, // Transparente
+    surface = GreenBaby,         // Cards verdes
+    onSurface = BrownCute,       // Texto Marrom
+    error = ErrorRed,
+    onError = Color.White
 )
 
 @Composable
-fun CuiGatoTheme( // ⚠️ Esta é a função que resolve o erro na MainActivity!
+fun CuiGatoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Desabilitamos Dynamic Color para manter a estética fofa consistente.
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            // Barra de status transparente
+            window.statusBarColor = Color.Transparent.toArgb()
+            // Ícones da barra de status escuros (para ver no papel de parede claro)
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
+    }
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Assume Typography.kt está definido e importado
+        typography = Typography,
         content = content
     )
 }

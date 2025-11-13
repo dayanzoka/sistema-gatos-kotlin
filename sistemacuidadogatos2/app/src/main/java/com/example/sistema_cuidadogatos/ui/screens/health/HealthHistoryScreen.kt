@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.database.entities.RegistroSaudeEntity
@@ -35,6 +36,7 @@ fun HealthHistoryScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = { Text("🏥 Histórico de Saúde") },
@@ -42,14 +44,15 @@ fun HealthHistoryScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate(Screen.HealthRecordForm.createRoute(0L, gatoId))
             }) {
-                Icon(Icons.Filled.Add, contentDescription = "Adicionar Registro")
+                Icon(Icons.Filled.Add, contentDescription = "Novo Registro")
             }
         }
     ) { padding ->
@@ -57,7 +60,7 @@ fun HealthHistoryScreen(
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         } else if (uiState.registros.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("Nenhum registro de saúde encontrado.", style = MaterialTheme.typography.bodyLarge)
+                Text("Nenhum registro encontrado.", style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             LazyColumn(
@@ -76,7 +79,7 @@ fun HealthHistoryScreen(
             AlertDialog(
                 onDismissRequest = { recordToDelete = null },
                 title = { Text("Excluir Registro") },
-                text = { Text("Deseja excluir este registro de saúde?") },
+                text = { Text("Deseja excluir este registro?") },
                 confirmButton = {
                     TextButton(onClick = {
                         recordToDelete?.let { viewModel.deleteRegistro(it) }
@@ -94,7 +97,8 @@ fun HealthRecordItem(registro: RegistroSaudeEntity, onDelete: () -> Unit) {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
     ) {
         Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
@@ -102,7 +106,8 @@ fun HealthRecordItem(registro: RegistroSaudeEntity, onDelete: () -> Unit) {
                 Text("Tipo: ${registro.tipoRegistro} | Data: ${dateFormat.format(Date(registro.data))}")
                 if (!registro.valor.isNullOrBlank()) Text("Valor: ${registro.valor}")
             }
-            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
+            // ✅ CORRIGIDO: Delete agora é 'primary' (Marrom)
+            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.primary) }
         }
     }
 }

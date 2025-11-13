@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.sistema_cuidadogatos.database.entities.RegistroSaudeEntity
@@ -33,6 +34,7 @@ fun HealthRecordFormScreen(
     var observacoes by remember { mutableStateOf("") }
 
     Scaffold(
+        containerColor = Color.Transparent, // ✅ Transparente
         topBar = {
             TopAppBar(
                 title = { Text("Novo Registro de Saúde") },
@@ -40,7 +42,8 @@ fun HealthRecordFormScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent) // ✅ Transparente
             )
         },
         floatingActionButton = {
@@ -68,15 +71,21 @@ fun HealthRecordFormScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.padding(padding).padding(16.dp).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.padding(padding).padding(16.dp).verticalScroll(rememberScrollState())
         ) {
-            OutlinedTextField(value = tipo, onValueChange = { tipo = it }, label = { Text("Tipo (VACINA, PESO, ETC)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título (ex: Vacina Raiva)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = valor, onValueChange = { valor = it }, label = { Text("Valor (ex: 3.5kg, Dose 1)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = dataStr, onValueChange = { dataStr = it }, label = { Text("Data (dd/MM/yyyy)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = observacoes, onValueChange = { observacoes = it }, label = { Text("Observações") }, modifier = Modifier.fillMaxWidth())
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(value = tipo, onValueChange = { tipo = it }, label = { Text("Tipo") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = valor, onValueChange = { valor = it }, label = { Text("Valor") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = dataStr, onValueChange = { dataStr = it }, label = { Text("Data") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = observacoes, onValueChange = { observacoes = it }, label = { Text("Obs") }, modifier = Modifier.fillMaxWidth())
+                }
+            }
         }
     }
 }
